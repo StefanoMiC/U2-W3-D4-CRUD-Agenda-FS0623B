@@ -4,9 +4,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>CRUD Agenda</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        .navbar-nav .nav-link.active,
+        .navbar-nav .nav-link.show {
+            --bs-nav-link-font-weight: 600;
+        }
+    </style>
 </head>
 
 <body>
@@ -34,7 +40,11 @@
     <div class="container-md">
         <div class="row justify-content-center">
             <div class="col-8">
-                <h2 class="display-4 my-4">Appuntamenti</h2>
+                <h2 class="display-4 my-4">Appuntamenti
+                    <div class="spinner-border text-primary fs-6" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </h2>
                 <ul id="list" class="list-group">
                     <!-- list item verranno generati qui programmaticamente -->
                     <!-- <li class="list-group-item">An item</li> -->
@@ -60,6 +70,8 @@
                     if (response.status >= 500 && response.status < 600) throw new Error("Errore lato Server")
                     if (!response.ok) throw new Error("Errore nel reperimento dei dati")
 
+
+                    // document.querySelector(".spinner-border").classList.add("d-none")
                     return response.json()
                 })
                 .then(appointments => {
@@ -69,15 +81,20 @@
 
                     appointments.forEach(appointment => {
                         const li = document.createElement("li")
-                        li.className = "list-group-item d-flex justify-content-between align-items-center"
+                        li.className = "list-group-item d-flex align-items-center"
 
-                        li.innerHTML = `<span>${appointment.name}</span> <span class="badge text-bg-dark">${appointment.price ? appointment.price + "€" : "<em>free</em>"}</span>`
+                        li.innerHTML = `<span class="me-auto">${appointment.name}</span> <span class="badge me-2 ${appointment.price ? "text-bg-dark" : "text-bg-success"}">${appointment.price ? appointment.price + "€" : "<em>free</em>"}</span> <a href="./details.html?resourceId=${appointment._id}">DETTAGLI</a>`
 
                         ul.appendChild(li)
                     })
 
                 })
-                .catch(err => console.log("HUSTON ABBIAMO UN PROBLEMA: ", err))
+                .catch(err => {
+                    console.log("HUSTON ABBIAMO UN PROBLEMA: ", err)
+                    // document.querySelector(".spinner-border").classList.add("d-none")
+                })
+                .finally(() =>
+                    document.querySelector(".spinner-border").classList.add("d-none"))
 
 
         }
