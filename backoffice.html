@@ -125,9 +125,9 @@
                 // fetch di tipo GET su endpoint con id incorporato
                 fetch(URL)
                     .then(resp => resp.json())
-                    .then(({ name, description, time, price }) => {
+                    .then((appointmentObj) => {
                         // destrutturazione già fatta sui parametri della callback function
-                        // const { name, description, time, price } = appointmentObj
+                        const { name, description, time, price } = appointmentObj
 
 
                         // prepopolazione campi input con valori reperiti dal server su risorsa specifica (per evitare errori di battitura)
@@ -188,6 +188,11 @@
                 .then(resp => resp.json())
                 .then(createdObj => {
 
+                    if (createdObj.hasOwnProperty("error")) {
+                        console.log(createdObj.error)
+                        showAlert(createdObj.error.errmsg, "danger",)
+                        return
+                    }
                     // Aspettiamo il valore di createdObj per estrarre un'informazione nuova generata dal server ad es. l'_id
 
                     // in base a come siamo arrivati qui, per creazione o modifica, creeremo il messaggio più appropriato alla fine della richiesta
